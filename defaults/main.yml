@@ -64,7 +64,6 @@ postfix_extra_files: ""
 #    @example.com apikey:secretkey
 #    example@example.net apikey2:secretkey2
 
-
 ##############################################
 ### SASL
 ##############################################
@@ -79,15 +78,16 @@ postfix_sasl_deamon_config: |
   THREADS=5
   OPTIONS="-c -m /var/run/saslauthd"
 
-postfix_sasl_config: ""
-  #ldap_servers: ldap://10.1.1.1:389
-  #ldap_start_tls: yes
-  #ldap_tls_check_peer: yes
-  #ldap_tls_cacert_file: /etc/ssl/certs/ca-certificates.crt
-  #ldap_search_base: ou=users,dc=exemple,dc=fr
-  ##ldap_filter: (&(|(memberOf=)))
-  #ldap_bind_dn: cn=xxxx,ou=applications,ou=users,dc=exemple,dc=fr
-  #ldap_password: xxxxxxxxxxxx
+postfix_sasl_config:
+  ""
+  # ldap_servers: ldap://10.1.1.1:389
+  # ldap_start_tls: yes
+  # ldap_tls_check_peer: yes
+  # ldap_tls_cacert_file: /etc/ssl/certs/ca-certificates.crt
+  # ldap_search_base: ou=users,dc=exemple,dc=fr
+  # ldap_filter: (&(|(memberOf=)))
+  # ldap_bind_dn: cn=xxxx,ou=applications,ou=users,dc=exemple,dc=fr
+  # ldap_password: xxxxxxxxxxxx
 
 ##############################################
 ### OPENDKIM
@@ -98,21 +98,19 @@ postfix_dkim_options: |
   smtpd_milters = inet:localhost:8891
   non_smtpd_milters = inet:localhost:8891
 
-smtp_opendkim_domains:
-  - exemple.fr
-
 smtp_opendkim_config: |
   AutoRestart             yes
   AutoRestartRate         10/1h
+  UMask                   002
   Syslog                  yes
   SyslogSuccess           yes
+
   LogWhy                  yes
   Canonicalization        relaxed/simple
   Mode                    sv
-  #SubDomains             no
-  OversignHeaders         From
+  # SubDomains             no
+  # OversignHeaders         From
   UserID                  opendkim:opendkim
-  UMask                   002
   Socket                  inet:8891@localhost
   PidFile                 /var/run/opendkim/opendkim.pid
   ExternalIgnoreList      refile:/etc/opendkim/TrustedHosts
@@ -120,21 +118,7 @@ smtp_opendkim_config: |
   KeyTable                refile:/etc/opendkim/KeyTable
   SigningTable            refile:/etc/opendkim/SigningTable
   SignatureAlgorithm      rsa-sha256
-  TrustAnchorFile         /usr/share/dns/root.key
-
-smtp_opendkim_default: |
-  RUNDIR=/run/opendkim
-  SOCKET=local:$RUNDIR/opendkim.sock
-  SOCKET="inet:8891@localhost"
-  USER=opendkim
-  GROUP=opendkim
-  PIDFILE=$RUNDIR/$NAME.pid
-  EXTRAAFTER=
-
-smtp_opendkim_trustedhosts: |
-  127.0.0.1
-  localhost
-  *.{{ smtp_opendkim_domains }}
+  # TrustAnchorFile         /usr/share/dns/root.key
 
 smtp_opendkim_keytables: |
   mail._domainkey.{{ smtp_opendkim_domains }} {{ smtp_opendkim_domains }}:mail:/etc/opendkim/keys/{{ smtp_opendkim_domains }}/mail.private
