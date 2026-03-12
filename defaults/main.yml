@@ -51,6 +51,10 @@ postfix_sasl_extra_conf: ""
 postfix_extra_options: |
   smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
 
+postfix_aliases: |
+  postmaster: root
+  root: /dev/null
+
 #############################################
 ### Configuration postfix master.cf
 postfix_master_extra: ""

@@ -73,13 +73,13 @@
     - postfix_dkim_install | bool
 
 - name: "DEBIAN13 | Ensure /etc/aliases exists with default content"
-  ansible.builtin.copy:
-    content: |
-      postmaster: root
+  ansible.builtin.template:
+    src: aliases.j2
     dest: /etc/aliases
     owner: root
     group: root
-    mode: '0644'
+    mode: '0640'
+    backup: true
   when: ansible_distribution == 'Debian' and ansible_facts.distribution_major_version == '13'
 
 - name: "Rebuild newaliases"
